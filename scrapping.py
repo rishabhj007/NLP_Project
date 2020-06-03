@@ -26,13 +26,17 @@ data = requests.get(url)  # getting the html of the search results
 html = BeautifulSoup(data.text, 'html.parser')  # changing raw data to html
 # print(html.get_text())
 while True:
-    if tweetlist.count() < tweetNo:
-        tweetlist.append(gettweets(html))
+    if len(tweetlist) < tweetNo:
+        tweetlist += gettweets(html)
         Div = html.find("div", {"class": "w-button-more"}).find('a')
-        url = Div['href']
+        url = "https://mobile.twitter.com" + Div['href']
+        print(url)
         data = requests.get(url)
-        html = BeautifulSoup(data.text,'html_parser')
+        html = BeautifulSoup(data.text,'html.parser')
     else:
         break
 
+
+def getlist():
+    return tweetlist
 
