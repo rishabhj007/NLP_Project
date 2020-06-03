@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def gettweets(html):
+def getTweets(html):
     thislist = []
     tweets = html.findAll("div", {"class": "dir-ltr"})
     for tweet in tweets:
@@ -10,33 +10,38 @@ def gettweets(html):
     return thislist
 
 
-print("Please input the search hashtag")
-hashTag = str(input())  # HashTag input from user
-print("Please input the required tweets")
-tweetNo = int(input())  # No of tweets required input from user
-tweetlist = []           # Empty list to contain tweets as strings
-hashTag.strip()  # removing any whitespaces
-if hashTag[0] == '#':  # removing hashTag char if present
-    hashTag = hashTag[1:]
-hashTag.replace(" ", "")  # removing spaces
+def main():
+    print("Please input the search HashTag")
+    hashTag = str(input())  # HashTag input from user
+    print("Please input the required Tweets")
 
-url = "https://mobile.twitter.com/search?q=" + "%23" + hashTag  # twitter query url
-print(url)
-data = requests.get(url)  # getting the html of the search results
-html = BeautifulSoup(data.text, 'html.parser')  # changing raw data to html
-# print(html.get_text())
-while True:
-    if len(tweetlist) < tweetNo:
-        tweetlist += gettweets(html)
-        Div = html.find("div", {"class": "w-button-more"}).find('a')
-        url = "https://mobile.twitter.com" + Div['href']
-        print(url)
-        data = requests.get(url)
-        html = BeautifulSoup(data.text,'html.parser')
-    else:
-        break
+    tweetNo = int(input())  # No of tweets required input from user
+    tweetlist = []  # Empty list to contain tweets as strings
 
+    hashTag.strip()  # removing any whitespaces
+    if hashTag[0] == '#':  # removing hashTag char if present
+        hashTag = hashTag[1:]
+    hashTag.replace(" ", "")  # removing spaces
 
-def getlist():
+    url = "https://mobile.twitter.com/search?q=" + "%23" + hashTag  # twitter query url
+
+    data = requests.get(url)  # getting the html of the search results
+    html = BeautifulSoup(data.text, 'html.parser')  # changing raw data to html
+
+    while True:
+        if len(tweetlist) < tweetNo:
+            tweetlist += getTweets(html)
+
+            div = html.find("div", {"class": "w-button-more"}).find('a')
+            url = "https://mobile.twitter.com" + div['href']
+
+            data = requests.get(url)
+            html = BeautifulSoup(data.text, 'html.parser')
+        else:
+            break
+
     return tweetlist
 
+
+if __name__ == "__main__":
+    main()
