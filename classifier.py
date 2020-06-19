@@ -38,13 +38,26 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, rand
 
 # Training the Naive Bayes model on the Training set
 import sklearn.naive_bayes as nb
-classifier = nb.BernoulliNB()
+classifier = nb.GaussianNB()
 classifier.fit(X_train, y_train)
 
 # Predicting the Test set results
-y_pred = classifier.predict(X_test)
+# y_pred = classifier.predict(X_test)
+#
+# # Making the Confusion Matrix
+# from sklearn.metrics import confusion_matrix
+# cm = confusion_matrix(y_test, y_pred)
+# print(cm)
 
-# Making the Confusion Matrix
-from sklearn.metrics import confusion_matrix
-cm = confusion_matrix(y_test, y_pred)
-print(cm)
+
+##twitter analysis
+
+tweetData = preprocessing.getTweets()
+TweetbagofWrds = cv.fit_transform(dataset).toarray()
+y_pred_new = classifier.predict(TweetbagofWrds)
+totalout = 0;
+for i in range(len(tweetData)):
+    print(tweetData[i])
+    totalout = totalout + int(y_pred_new[i])
+    
+print(totalout)

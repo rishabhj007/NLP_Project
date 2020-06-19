@@ -1,6 +1,6 @@
 import pandas as pd
 
-loc = "C:/Users/UserName/Downloads/1270_2296_bundle_archive/"
+loc = "C:/Users/risha/Downloads/1270_2296_bundle_archive/"
 Neg = open(loc+"processedNegative.csv", "r").read()
 Neut = open(loc+"processedNegative.csv", "r").read()
 Pos = open(loc+"processedPositive.csv", "r").read()
