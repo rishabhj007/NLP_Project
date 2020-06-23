@@ -19,29 +19,47 @@ from nltk import WordNetLemmatizer
 from nltk.corpus import stopwords
 import re
 import scrapping
+import string
 
 
 def getTweets():
     lem = WordNetLemmatizer()
-    sp = scrapping.main()
     sw_set = set(stopwords.words('english'))
+    df = scrapping.main()
     dataset = []
-    for tweet in sp:
-        # tokens = word_tokenize(tweet.lower())
+    for i in df:
+        tweet = i.lower()
+        tweet = re.sub(r"\A@\w+", '', tweet)
+        tweet = re.sub(r"https\S+", '', tweet)
+        tweet = re.sub(r"http\S+", '', tweet)
+        tweet = re.sub(r"pic\.twitter\.\S+", '', tweet)
+        tweet = tweet.strip(string.punctuation)
         token2 = re.sub('[^a-zA-Z]', ' ', tweet).split()
-        # tokens = [lem.lemmatize(word) for word in tokens if word not in SWset]
-        token2 = [lem.lemmatize(word) for word in token2 if word not in sw_set]
-        dataset.append(token2)
+        # print(token2)
+        token3 = [lem.lemmatize(word) for word in token2 if word not in sw_set]
+        # print(' '.join(token3))
+        dataset.append(' '.join(token3))
+        # if(len(dataset) >25):
+        #     break
+    print("Cleaning Done")
     return dataset
 
-def getData(sp):
+def getData(df):
     lem = WordNetLemmatizer()
     sw_set = set(stopwords.words('english'))
     dataset = []
-    for tweet in sp:
-        # tokens = word_tokenize(tweet.lower())
+    for i in df.text:
+        tweet = i.lower()
+        tweet = re.sub(r"\A@\w+", '', tweet)
+        tweet = re.sub(r"https\S+", '', tweet)
+        tweet = re.sub(r"http\S+", '', tweet)
+        tweet = tweet.strip(string.punctuation)
         token2 = re.sub('[^a-zA-Z]', ' ', tweet).split()
-        # tokens = [lem.lemmatize(word) for word in tokens if word not in SWset]
-        token2 = [lem.lemmatize(word) for word in token2 if word not in sw_set]
-        dataset.append(token2)
+        # print(token2)
+        token3 = [lem.lemmatize(word) for word in token2 if word not in sw_set]
+        # print(' '.join(token3))
+        dataset.append(' '.join(token3))
+        # if(len(dataset) >25):
+        #     break
+    print("Cleaning Done")
     return dataset

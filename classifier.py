@@ -2,20 +2,6 @@
 # Creating the Bag of Words model
 import preprocessing
 import data_structuring
-# from nltk.corpus import twitter_samples
-#
-# pos = twitter_samples.strings('positive_tweets.json')
-# neg = twitter_samples.strings('negative_tweets.json')
-# posData = preprocessing.getData(pos)
-# negData = preprocessing.getData(neg)
-#
-# df1 = pd.DataFrame(negData,columns = ['Text'])
-# df1 = df1.assign(Sent=0)
-#
-# df2 = pd.DataFrame(posData,columns = ['Text'])
-# df2.assign(Sent=1)
-#
-# df = pd.concat([df1, df2, df3])
 
 data = data_structuring.df
 dt = preprocessing.getData(data_structuring.arr)

@@ -4,6 +4,7 @@ from nltk.corpus import stopwords
 import re
 import string
 import random
+import preprocessing
 
 cols = ['sentiment','id','date','query_string','user','text']
 loc = "C:/Users/risha/Downloads/NLP Data/"
@@ -12,54 +13,49 @@ df = df.drop(columns=['id','date','query_string','user'])
 neg = random.randint(1,650000)
 pos = random.randint(800000,1500000)
 
-dataset = df.loc[neg:neg+100000,:] + df.loc[pos:pos+100000,:]
-print(len(dataset))
-print(dataset.head())
-# k = 0
-# for i in df.text:
-#     print(type(i))
-#     print(i)
-#     k = k + 1
-#     if k is 5:
-#         break
+neg = df.loc[neg:(neg+100000)]
+pos = df.loc[pos:(pos+100000)]
+df = pd.concat([neg,pos])
 
-# df = df.iloc[:10,]
 print("Data Import Complete")
 
-lem = WordNetLemmatizer()
-sw_set = set(stopwords.words('english'))
-dataset = []
-for i in df.text:
-    tweet = i.lower()
-    tweet = re.sub(r"\A@\w+",'',tweet)
-    tweet = re.sub(r"https\S+", '', tweet)
-    tweet = re.sub(r"http\S+", '', tweet)
-    tweet = tweet.strip(string.punctuation)
-    token2 = re.sub('[^a-zA-Z]',' ', tweet).split()
-    # print(token2)
-    token3 = [lem.lemmatize(word) for word in token2 if word not in sw_set]
-    # print(' '.join(token3))
-    dataset.append(' '.join(token3))
-    # if(len(dataset) >25):
-    #     break
+dataset = preprocessing.getData(df)
 
-print("Cleaning Done")
-
-from sklearn.feature_extraction.text import CountVectorizer
-cv = CountVectorizer(max_features=1500)
+from sklearn.feature_extraction.text import TfidfVectorizer
+cv = TfidfVectorizer(max_features=1500)
 X = cv.fit_transform(dataset).toarray()
 y = df.iloc[:, 0].values
-#
-# print(cv.get_feature_names())
-#
+
+print("Vectorization finished")
+
 # # Splitting the dataset into the Training set and Test set
 # from sklearn.model_selection import train_test_split
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 0)
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.10, random_state = 0)
 #
-# # Training the Naive Bayes model on the Training set
-# import sklearn.naive_bayes as nb
-# classifier = nb.GaussianNB()
-# classifier.fit(X_train, y_train)
-#
-# # Predicting the Test set results
-# y_pred = classifier.predict(X_test)
+# print("data split complete")
+
+# Training the Naive Bayes model on the Training set
+import sklearn.naive_bayes as nb
+classifier = nb.MultinomialNB()
+classifier.fit(X, y)
+
+#adding tweet functionality
+tweetData = preprocessing.getTweets()
+TweetBOW = cv.transform(tweetData)
+
+# Predicting the Test set results
+y_pred = classifier.predict(TweetBOW)
+print(y_pred)
+totalout = 0;
+for i in range(len(tweetData)):
+    print(tweetData[i])
+    if(int(y_pred[i]) == 0):
+        totalout = totalout -1
+    else:
+        totalout = totalout +1
+
+print(totalout)
+# Making the Confusion Matrix
+# from sklearn.metrics import confusion_matrix
+# cm = confusion_matrix(y_test, y_pred)
+# print(cm)
