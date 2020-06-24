@@ -1,8 +1,4 @@
 import pandas as pd
-from nltk import WordNetLemmatizer
-from nltk.corpus import stopwords
-import re
-import string
 import random
 import preprocessing
 
@@ -28,16 +24,11 @@ y = df.iloc[:, 0].values
 
 print("Vectorization finished")
 
-# # Splitting the dataset into the Training set and Test set
-# from sklearn.model_selection import train_test_split
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.10, random_state = 0)
-#
-# print("data split complete")
-
 # Training the Naive Bayes model on the Training set
 import sklearn.naive_bayes as nb
 classifier = nb.MultinomialNB()
 classifier.fit(X, y)
+print("training complete")
 
 #adding tweet functionality
 tweetData = preprocessing.getTweets()
@@ -46,15 +37,28 @@ TweetBOW = cv.transform(tweetData)
 # Predicting the Test set results
 y_pred = classifier.predict(TweetBOW)
 print(y_pred)
+y_prob = classifier.predict_proba(TweetBOW)
 totalout = 0;
 for i in range(len(tweetData)):
-    print(tweetData[i])
-    if(int(y_pred[i]) == 0):
-        totalout = totalout -1
+    prob = y_prob.item((i,1)) 
+    if(prob > .60):
+        totalout = totalout + 1
+    elif(.60>=prob>=.40):
+        continue
     else:
         totalout = totalout +1
 
 print(totalout)
+
+totalout = 0;
+for i in range(len(tweetData)):
+    if(y_pred[i] == 0):
+        totalout -= 1
+    else:
+        totalout +=0
+
+print(totalout)
+
 # Making the Confusion Matrix
 # from sklearn.metrics import confusion_matrix
 # cm = confusion_matrix(y_test, y_pred)
