@@ -6,11 +6,6 @@ def getTweets(html):
     thislist = []
     for div in html.findAll("div", {"class": "dir-ltr"}):
         thislist.append(div.get_text())
-
-    #     Previous code
-    # tweets = html.findAll("div", {"class": "dir-ltr"}).text()
-    # for tweet in tweets:
-    #     thislist.append(tweet)
     return thislist
 
 
@@ -43,9 +38,6 @@ def main():
             html = BeautifulSoup(data.text, 'html.parser')
         else:
             break
-    #   uncomment for debug
-    # for tweets in tweetlist:
-    #     print(tweets)
     return tweetlist
 
 
