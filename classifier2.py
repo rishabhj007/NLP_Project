@@ -45,7 +45,7 @@ TweetBOW = cv.transform(tweetData)
 
 # Predicting the Test set results
 y_pred = classifier.predict(TweetBOW)
-print(y_pred)
+#print(y_pred) #commented the classification array
 totalout = 0;
 for i in range(len(tweetData)):
     print(tweetData[i])
@@ -54,7 +54,15 @@ for i in range(len(tweetData)):
     else:
         totalout = totalout +1
 
-print(totalout)
+#print(totalout)
+#redefined the output
+print("Total POSITIVE tweets - Total NEGATIVE tweets = ",totalout)
+if totalout > 0:
+    print("Overall sentiment is POSITIVE")
+elif totalout < 0:
+    print("Overall sentiment is NEGATIVE")
+else :
+    print("Overall sentiment is NEUTRAL")
 # Making the Confusion Matrix
 # from sklearn.metrics import confusion_matrix
 # cm = confusion_matrix(y_test, y_pred)
